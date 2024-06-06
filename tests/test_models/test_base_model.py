@@ -21,6 +21,20 @@ class TestBaseModel(unittest.TestCase):
         self.assertIsInstance(self.model.created_at, datetime)
         self.assertIsInstance(self.model.updated_at, datetime)
 
+    def test_initialization_with_kwargs(self):
+        """Test initialization with kwargs."""
+        kwargs = {
+            'id': '1234',
+            'created_at': '2022-01-01T12:00:00',
+            'updated_at': '2022-01-01T12:00:00',
+            'name': 'test'
+        }
+        model = BaseModel(**kwargs)
+        self.assertEqual(model.id, '1234')
+        self.assertEqual(model.created_at, datetime.fromisoformat('2022-01-01T12:00:00'))
+        self.assertEqual(model.updated_at, datetime.fromisoformat('2022-01-01T12:00:00'))
+        self.assertEqual(model.name, 'test')
+
     def test_str(self):
         """Test the __str__ method of the BaseModel."""
         expected_output = f"[BaseModel] ({self.model.id}) {self.model.__dict__}"
