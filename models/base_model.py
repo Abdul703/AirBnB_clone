@@ -13,30 +13,39 @@ class BaseModel:
     """
     The Base class for all models, providing common attributes and methods.
     """
-    
-    def __init__(self):
+
+    def __init__(self, *args, **kwargs):
         """
         Initialize the base class with unique ID, and creation
         and update timestamps.
         """
-        self.id = str(uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+        if kwargs:
+            for key, value in kwargs.items():
+                if key != '__class__':
+                    if key in ('created_at', 'updated_at'):
+                        setattr(self, key, datetime.fromisoformat(value))
+                    else:
+                        setattr(self, key, value)
+        else:
+            self.id = str(uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
 
     def __str__(self):
         """Return a string representation of the instance.
-        
+
         Returns:
             str: The string representation in the format
                 '[<class name>] (<self.id>) <self.__dict__>'
         """
         return f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}"
-    
+
     def to_dict(self):
         """Return a dictionary containing all keys/values of the instance.
-        
+
         Returns:
-            dict: A dictionary representation of the instance, with ISO formatted date strings and class name.
+            dict: A dictionary representation of the instance,
+            with ISO formatted date strings and class name.
         """
         instance_dict = self.__dict__.copy()
         instance_dict['created_at'] = self.created_at.isoformat()
