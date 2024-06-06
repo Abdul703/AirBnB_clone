@@ -20,7 +20,12 @@ class BaseModel:
     
     def to_dict(self):
         """deserialize class object"""
-        return self.__dict__
+        d = self.__dict__
+        print(d)
+        d['created_at'] = str(d['created_at'])
+        d['updated_at'] = str(d['updated_at'])
+        d['__class__'] = self.__class__.__name__
+        return d
 
     def save(self):
         """save the changes made to an object"""
