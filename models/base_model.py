@@ -11,8 +11,8 @@ class BaseModel:
     def __init__(self):
         """initialise the base class"""
         self.id = str(uuid4())
-        self.created_at = datetime.fromisoformat(datetime.now().isoformat())
-        self.updated_at = datetime.fromisoformat(datetime.now().isoformat())
+        self.created_at = datetime.now()
+        self.updated_at = datetime.now()
 
     def __str__(self):
         """print the class info"""
@@ -21,12 +21,11 @@ class BaseModel:
     def to_dict(self):
         """deserialize class object"""
         d = self.__dict__
-        print(d)
-        d['created_at'] = str(d['created_at'])
-        d['updated_at'] = str(d['updated_at'])
+        d['created_at'] = d['created_at'].isoformat()
+        d['updated_at'] = d['updated_at'].isoformat()
         d['__class__'] = self.__class__.__name__
         return d
 
     def save(self):
         """save the changes made to an object"""
-        self.updated_at = datetime.fromisoformat(datetime.now().isoformat())
+        self.updated_at = datetime.now()
