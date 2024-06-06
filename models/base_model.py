@@ -16,7 +16,6 @@ class BaseModel:
 
     def __str__(self):
         """print the class info"""
-        print(type(self.__dict__))
         return f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}"
     
     def to_dict(self):
