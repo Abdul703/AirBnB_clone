@@ -11,8 +11,8 @@ class BaseModel:
     def __init__(self):
         """initialise the base class"""
         self.id = str(uuid4())
-        self.created_at = datetime.now().isoformat()
-        self.updated_at = datetime.now().isoformat()
+        self.created_at = datetime.fromisoformat(datetime.now().isoformat())
+        self.updated_at = datetime.fromisoformat(datetime.now().isoformat())
 
     def __str__(self):
         """print the class info"""
@@ -25,4 +25,4 @@ class BaseModel:
 
     def save(self):
         """save the changes made to an object"""
-        self.updated_at = datetime.now().isoformat()
+        self.updated_at = datetime.fromisoformat(datetime.now().isoformat())
