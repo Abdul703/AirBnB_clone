@@ -4,6 +4,7 @@ Unit tests for BaseModel class.
 """
 
 import unittest
+from datetime import datetime
 from models.base_model import BaseModel
 from models import storage
 
@@ -17,10 +18,7 @@ class TestBaseModel(unittest.TestCase):
 
     def tearDown(self):
         """Clean up after tests."""
-        try:
-            storage._FileStorage__objects.clear()
-        except AttributeError:
-            pass
+        storage._FileStorage__objects.clear()
 
     def test_init(self):
         """Test initialization of BaseModel."""
