@@ -7,7 +7,7 @@ which serves as the base class for other models.
 
 from datetime import datetime
 from uuid import uuid4
-from models.__init__ import storage
+# from models.__init__ import storage
 
 
 class BaseModel:
@@ -20,6 +20,7 @@ class BaseModel:
         Initialize the base class with unique ID, and creation
         and update timestamps.
         """
+        from models import storage
         if kwargs:
             for key, value in kwargs.items():
                 if key != '__class__':
@@ -57,5 +58,6 @@ class BaseModel:
 
     def save(self):
         """Update the `updated_at` attribute with the current datetime."""
+        from models import storage
         storage.save()
         self.updated_at = datetime.now()
