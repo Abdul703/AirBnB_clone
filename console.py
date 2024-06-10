@@ -32,7 +32,7 @@ class HBNBCommand(cmd.Cmd):
         Create a BaseModel object and save it in file.json.
 
         Syntax:
-            create CLASSNAME
+            create <class name>
         """
         if not arg:
             print("** class name missing **")
@@ -47,17 +47,18 @@ class HBNBCommand(cmd.Cmd):
 
     def do_show(self, arg):
         """
-        Show the string representation of an instance based on the class name and id.
+        Show the string representation of an instance based on the
+        class name and id.
 
         Syntax:
-            show CLASSNAME ID
+            show <class name> <id>
         """
         args = arg.split()
 
         if len(args) == 0:
             print("** class name missing **")
             return
-        
+
         class_name = args[0]
         if class_name != 'BaseModel':
             print("** class doesn't exist **")
@@ -82,14 +83,14 @@ class HBNBCommand(cmd.Cmd):
         Deletes an instance based on the class name and id.
 
         Syntax:
-            destroy CLASSNAME ID
+            destroy <class name> <id>
         """
         args = arg.split()
 
         if len(args) == 0:
             print("** class name missing **")
             return
-        
+
         class_name = args[0]
         if class_name != 'BaseModel':
             print("** class doesn't exist **")
@@ -108,6 +109,36 @@ class HBNBCommand(cmd.Cmd):
             storage.save()
         except KeyError:
             print("** no instance found **")
+
+    def do_all(self, arg):
+        """
+        Prints all string representation of all instances based or not on the
+        class name.
+
+        Syntax:
+            all <class name (optional)>
+        """
+
+        args = arg.split()
+        all_objects = storage.all()
+
+        if len(args) == 0:
+            # No class name provided, print all objects
+            for obj in all_objects.values():
+                print(obj)
+        else:
+            # Class name provided, filter and print objects of that class
+            class_name = args[0]
+            found = False
+
+            for key, value in all_objects.items():
+                if key.split('.')[0] == class_name:
+                    found = True
+                    print(value)
+            
+            if not found:
+                print("** class doesn't exist **")
+          
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
