@@ -1,5 +1,19 @@
 #!/usr/bin/python3
-"""Command Prompt Module"""
+"""
+Command Prompt Module
+
+This module defines the HBNBCommand class, which provides an interactive command line interface 
+for managing HBNB instances. It allows users to create, show, destroy, update, and list instances 
+of various classes defined in the HBNB project.
+
+Classes:
+    HBNBCommand: Command prompt class for HBNB.
+
+Usage:
+    Run this module directly to start the HBNB command line interface.
+    Example:
+        $ ./console.py
+"""
 import cmd
 from models.base_model import BaseModel
 from models import storage

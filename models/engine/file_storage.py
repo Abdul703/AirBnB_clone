@@ -3,6 +3,7 @@
 import json
 from os.path import exists
 from models.base_model import BaseModel
+from models.user import User
 
 
 class FileStorage:
@@ -45,5 +46,10 @@ class FileStorage:
         """Deserialize the JSON file to objects."""
         if exists(FileStorage.__file_path):
             with open(FileStorage.__file_path, 'r', encoding='utf-8') as file:
-                items = json.load(file).items()
-                FileStorage.__objects = {k: BaseModel(**v) for k, v in items}
+                items = json.load(file)
+                for key, value in items.items():
+                    class_name = value['__class__']
+                    if class_name == 'BaseModel':
+                        FileStorage.__objects[key] = BaseModel(**value)
+                    elif class_name == 'User':
+                        FileStorage.__objects[key] = User(**value)
