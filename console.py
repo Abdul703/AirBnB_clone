@@ -17,6 +17,7 @@ Usage:
 import cmd
 from models.base_model import BaseModel
 from models import storage
+from models.user import User
 
 
 class HBNBCommand(cmd.Cmd):
@@ -54,10 +55,14 @@ class HBNBCommand(cmd.Cmd):
 
         if arg == 'BaseModel':
             obj = BaseModel()
-            obj.save()
-            print(obj.id)
+        elif arg == 'User':
+            obj = User()
         else:
             print("** class doesn't exist **")
+            return
+        
+        obj.save()
+        print(obj.id)
 
     def do_show(self, arg):
         """
@@ -74,7 +79,7 @@ class HBNBCommand(cmd.Cmd):
             return
 
         class_name = args[0]
-        if class_name != 'BaseModel':
+        if class_name not in ('BaseModel', 'User'):
             print("** class doesn't exist **")
             return
 
@@ -106,7 +111,7 @@ class HBNBCommand(cmd.Cmd):
             return
 
         class_name = args[0]
-        if class_name != 'BaseModel':
+        if class_name not in ('BaseModel', 'User'):
             print("** class doesn't exist **")
             return
 
@@ -168,7 +173,7 @@ class HBNBCommand(cmd.Cmd):
             return
 
         class_name = args[0]
-        if class_name != 'BaseModel':
+        if class_name not in ('BaseModel', 'User'):
             print("** class doesn't exist **")
             return
 
