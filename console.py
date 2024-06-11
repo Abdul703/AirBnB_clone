@@ -15,8 +15,13 @@ Usage:
         $ ./console.py
 """
 import cmd
+from models.amenity import Amenity
 from models.base_model import BaseModel
 from models import storage
+from models.city import City
+from models.place import Place
+from models.review import Review
+from models.state import State
 from models.user import User
 
 
@@ -28,6 +33,15 @@ class HBNBCommand(cmd.Cmd):
     """
 
     prompt = '(hbnb) '
+    classes = {
+        'BaseModel': BaseModel,
+        'User': User,
+        'State': State,
+        'City': City,
+        'Place': Place,
+        'Amenity': Amenity,
+        'Review': Review
+    }
 
     def do_quit(self, arg):
         """Quit command to exit the program."""
@@ -53,16 +67,12 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
 
-        if arg == 'BaseModel':
-            obj = BaseModel()
-        elif arg == 'User':
-            obj = User()
+        if arg in self.classes:
+            obj = self.classes[arg]()
+            obj.save()
+            print(obj.id)
         else:
             print("** class doesn't exist **")
-            return
-        
-        obj.save()
-        print(obj.id)
 
     def do_show(self, arg):
         """
@@ -79,7 +89,7 @@ class HBNBCommand(cmd.Cmd):
             return
 
         class_name = args[0]
-        if class_name not in ('BaseModel', 'User'):
+        if class_name not in self.classes:
             print("** class doesn't exist **")
             return
 
@@ -111,7 +121,7 @@ class HBNBCommand(cmd.Cmd):
             return
 
         class_name = args[0]
-        if class_name not in ('BaseModel', 'User'):
+        if class_name not in self.classes:
             print("** class doesn't exist **")
             return
 
@@ -148,15 +158,13 @@ class HBNBCommand(cmd.Cmd):
         else:
             # Class name provided, filter and print objects of that class
             class_name = args[0]
-            found = False
+            if class_name not in self.classes:
+                print("** class doesn't exist **")
+                return
 
             for key, value in all_objects.items():
                 if key.split('.')[0] == class_name:
-                    found = True
                     print(value)
-            
-            if not found:
-                print("** class doesn't exist **")
 
     def do_update(self, arg):
         """Updates an instance based on the class name and id by
@@ -173,7 +181,7 @@ class HBNBCommand(cmd.Cmd):
             return
 
         class_name = args[0]
-        if class_name not in ('BaseModel', 'User'):
+        if class_name not in self.classes:
             print("** class doesn't exist **")
             return
 

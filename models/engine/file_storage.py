@@ -21,7 +21,15 @@ class FileStorage:
 
     def __init__(self):
         """Initialize the FileStorage instance."""
-        pass
+        self.classes = {
+            'BaseModel': BaseModel,
+            'User': User,
+            'State': State,
+            'City': City,
+            'Place': Place,
+            'Amenity': Amenity,
+            'Review': Review
+        }
 
     def all(self):
         """Return all saved objects.
@@ -54,17 +62,4 @@ class FileStorage:
                 items = json.load(file)
                 for key, value in items.items():
                     class_name = value['__class__']
-                    if class_name == 'BaseModel':
-                        FileStorage.__objects[key] = BaseModel(**value)
-                    elif class_name == 'User':
-                        FileStorage.__objects[key] = User(**value)
-                    elif class_name == 'Place':
-                        FileStorage.__objects[key] = Place(**value)
-                    elif class_name == 'City':
-                        FileStorage.__objects[key] = City(**value)
-                    elif class_name == 'State':
-                        FileStorage.__objects[key] = State(**value)
-                    elif class_name == 'Amenity':
-                        FileStorage.__objects[key] = Amenity(**value)
-                    elif class_name == 'Review':
-                        FileStorage.__objects[key] = Review(**value)
+                    FileStorage.__objects[key] = self.classes[class_name](**value)
