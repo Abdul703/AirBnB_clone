@@ -236,6 +236,10 @@ class HBNBCommand(cmd.Cmd):
             all_objects = storage.all().keys()
             class_objs = [k for k in all_objects if k.startswith(class_name)]
             print(len(class_objs))
+        elif method_name == 'show':
+            id = method_args
+            arg = f"{class_name} {id}"
+            self.do_show(arg)
           
 
 if __name__ == '__main__':
