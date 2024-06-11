@@ -212,6 +212,26 @@ class HBNBCommand(cmd.Cmd):
 
         except KeyError:
             print("** no instance found **")
+
+    def default(self, line):
+        """
+        Handle <class name>.<command>() syntax.
+
+        This method intercepts commands that are not explicitly handled
+        and checks if they match the <class name>.<command>() pattern.
+        """
+        parts = line.split('.')
+        class_name, method_call = parts[0], parts[1]
+
+        if class_name not in self.classes:
+            print("** class doesn't exist **")
+            return
+
+        method_name, method_args = method_call.split('(')
+        method_args = method_args.rstrip(')')
+
+        if method_name == 'all':
+            self.do_all(class_name)
           
 
 if __name__ == '__main__':
