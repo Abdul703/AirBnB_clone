@@ -232,6 +232,10 @@ class HBNBCommand(cmd.Cmd):
 
         if method_name == 'all':
             self.do_all(class_name)
+        elif method_name == 'count':
+            all_objects = storage.all().keys()
+            class_objs = [k for k in all_objects if k.startswith(class_name)]
+            print(len(class_objs))
           
 
 if __name__ == '__main__':
