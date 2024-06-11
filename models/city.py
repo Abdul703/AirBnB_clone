@@ -5,7 +5,7 @@ from models.base_model import BaseModel
 
 class City(BaseModel):
     """
-    User class that inherits from BaseModel.
+    City class that inherits from BaseModel.
 
     Attributes:
         name (str): The name of the state.

@@ -4,9 +4,11 @@ from models.base_model import BaseModel
 
 
 class Amenity(BaseModel):
-    """Amenity class
-
-    Args:
-        BaseModel (class): Base class
     """
-    pass
+    Amenity class that inherits from BaseModel.
+
+    Attributes:
+        name (str): The name of the amenity.
+    """
+
+    name = ''
