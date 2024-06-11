@@ -240,6 +240,10 @@ class HBNBCommand(cmd.Cmd):
             id = method_args
             arg = f"{class_name} {id}"
             self.do_show(arg)
+        elif method_name == 'destroy':
+            id = method_args
+            arg = f"{class_name} {id}"
+            self.do_destroy(arg)
           
 
 if __name__ == '__main__':
