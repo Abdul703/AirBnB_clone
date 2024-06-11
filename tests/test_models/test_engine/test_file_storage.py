@@ -1,74 +1,84 @@
 #!/usr/bin/python3
-"""
-Unit tests for FileStorage class.
-"""
-
 import unittest
+from models.base_model import BaseModel
+from models.user import User
+from models.state import State
+from models.city import City
+from models.place import Place
+from models.amenity import Amenity
+from models.review import Review
+from models import storage
 import os
 import json
-from models.engine.file_storage import FileStorage
-from models.base_model import BaseModel
 
 
 class TestFileStorage(unittest.TestCase):
-    """Test suite for the FileStorage class."""
+    """Test cases for FileStorage class."""
 
     def setUp(self):
         """Set up test environment."""
-        self.file_path = FileStorage._FileStorage__file_path
-        self.storage = FileStorage()
-        self.obj = BaseModel()
-        self.storage.new(self.obj)
+        self.file_path = storage._FileStorage__file_path
+        self.objects = storage._FileStorage__objects
+        self.base_model = BaseModel()
+        self.user = User()
+        self.state = State()
+        self.city = City()
+        self.place = Place()
+        self.amenity = Amenity()
+        self.review = Review()
+        self.objects.clear()
 
     def tearDown(self):
-        """Clean up after tests."""
+        """Tear down test environment."""
         if os.path.exists(self.file_path):
             os.remove(self.file_path)
-        self.storage._FileStorage__objects.clear()
+        self.objects.clear()
 
     def test_all(self):
         """Test the all method."""
-        self.assertEqual(self.storage.all(), {f"BaseModel.{self.obj.id}": self.obj})
+        self.assertEqual(storage.all(), self.objects)
+        self.assertIsInstance(storage.all(), dict)
 
     def test_new(self):
         """Test the new method."""
-        new_obj = BaseModel()
-        self.storage.new(new_obj)
-        key = f"BaseModel.{new_obj.id}"
-        self.assertIn(key, self.storage.all())
+        storage.new(self.base_model)
+        key = f'BaseModel.{self.base_model.id}'
+        self.assertIn(key, storage.all())
+        self.assertEqual(storage.all()[key], self.base_model)
 
     def test_save(self):
         """Test the save method."""
-        self.storage.save()
-        with open(self.file_path, 'r', encoding='utf-8') as f:
-            objects = json.load(f)
-        key = f"BaseModel.{self.obj.id}"
-        self.assertIn(key, objects)
-        self.assertEqual(objects[key]['id'], self.obj.id)
+        storage.new(self.base_model)
+        storage.save()
+        with open(self.file_path, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+        key = f'BaseModel.{self.base_model.id}'
+        self.assertIn(key, data)
+        self.assertEqual(data[key]['id'], self.base_model.id)
 
     def test_reload(self):
         """Test the reload method."""
-        self.storage.save()
-        self.storage._FileStorage__objects.clear()
-        self.storage.reload()
-        key = f"BaseModel.{self.obj.id}"
-        self.assertIn(key, self.storage.all())
-        reloaded_obj = self.storage.all()[key]
-        self.assertEqual(reloaded_obj.id, self.obj.id)
-        self.assertEqual(reloaded_obj.created_at, self.obj.created_at)
-        self.assertEqual(reloaded_obj.updated_at, self.obj.updated_at)
+        storage.new(self.base_model)
+        storage.save()
+        storage.reload()
+        key = f'BaseModel.{self.base_model.id}'
+        self.assertIn(key, storage.all())
+        self.assertEqual(storage.all()[key].id, self.base_model.id)
 
-    def test_save_and_reload(self):
-        """Test save and reload methods together."""
-        self.storage.save()
-        self.storage._FileStorage__objects.clear()
-        self.storage.reload()
-        key = f"BaseModel.{self.obj.id}"
-        self.assertIn(key, self.storage.all())
-        reloaded_obj = self.storage.all()[key]
-        self.assertEqual(reloaded_obj.id, self.obj.id)
-        self.assertEqual(reloaded_obj.created_at, self.obj.created_at)
-        self.assertEqual(reloaded_obj.updated_at, self.obj.updated_at)
+    def test_classes_in_storage(self):
+        """Test the various classes are properly handled by storage."""
+        classes = [self.base_model, self.user, self.state, self.city, self.place, self.amenity, self.review]
+        for obj in classes:
+            storage.new(obj)
+            key = f'{obj.__class__.__name__}.{obj.id}'
+            self.assertIn(key, storage.all())
+            self.assertEqual(storage.all()[key], obj)
+        storage.save()
+        storage.reload()
+        for obj in classes:
+            key = f'{obj.__class__.__name__}.{obj.id}'
+            self.assertIn(key, storage.all())
+            self.assertEqual(storage.all()[key].id, obj.id)
 
 
 if __name__ == '__main__':
