@@ -245,9 +245,22 @@ class HBNBCommand(cmd.Cmd):
             arg = f"{class_name} {id}"
             self.do_destroy(arg)
         elif method_name == 'update':
-            id, attr, value = method_args.split(', ')
-            arg = f"{class_name} {id} {attr} {value}"
-            self.do_update(arg)
+            
+            if ', {' in method_args:
+                args = method_args.split(', {')
+                id, attributes = args[0], args[1]
+
+                attributes = attributes[:-1].split(', ')
+                for item in attributes:
+                    attr, value = item.split(': ')
+                    arg = f"{class_name} {id} {attr} {value}"
+                    self.do_update(arg)
+            else:
+                args = method_args.split(', ')
+                attr = args[1]
+                value = args[2]
+                arg = f"{class_name} {id} {attr} {value}"
+                self.do_update(arg)
           
 
 if __name__ == '__main__':
