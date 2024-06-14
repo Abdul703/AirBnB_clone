@@ -196,5 +196,13 @@ class TestHBNBCommand(unittest.TestCase):
             self.cli.onecmd(f'update BaseModel {obj.id} name NewName')
             self.assertEqual(obj.name, "NewName")
 
+    def test_base_model_all(self):
+        """Test BaseModel.all() command"""
+        with patch('sys.stdout', new=StringIO()) as output:
+            obj = BaseModel()
+            obj.save()
+            self.cli.onecmd("BaseModel.all()")
+            self.assertIn(str(obj), output.getvalue())
+
 if __name__ == '__main__':
     unittest.main()
