@@ -61,9 +61,16 @@ class TestHBNBCommand(unittest.TestCase):
 
     def test_help(self):
         """Test help command for all commands"""
-        with patch('sys.stdout', new=StringIO()) as f:
-            self.cli.onecmd("help")
-            self.assertIsInstance(f.getvalue(), str)
+        command_helps = {
+            'help': 'List available commands with "help" or detailed help with "help cmd".'
+        }
+
+        for cmd, msg in command_helps.items():
+            with patch('sys.stdout', new=StringIO()) as f:
+                HBNBCommand().onecmd(f"help {cmd}")
+                self.assertIsInstance(f.getvalue(), str)
+                self.assertEqual(f.getvalue().strip(), msg)
+
 
     def test_create_missing_class(self):
         """Test create command with missing class name"""
@@ -226,6 +233,14 @@ class TestHBNBCommand(unittest.TestCase):
                 obj.save()
                 self.cli.onecmd(f"{class_name}.all()")
                 self.assertIn(str(obj), output.getvalue())
+
+    def test_class_name_dot_method_count(self):
+        """Test <class name>.count() command"""
+        for class_name in self.classes:
+            with patch('sys.stdout', new=StringIO()) as output:
+                count = len([obj for obj in storage.all().values() if obj.__class__.__name__ == class_name])
+                self.cli.onecmd(f"{class_name}.count()")
+                self.assertEqual(output.getvalue().strip(), str(count))
 
 if __name__ == '__main__':
     unittest.main()
