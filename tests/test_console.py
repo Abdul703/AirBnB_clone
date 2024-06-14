@@ -8,6 +8,7 @@ from io import StringIO
 from console import HBNBCommand
 from models import storage
 from models.base_model import BaseModel
+from models.review import Review
 import os
 
 class TestHBNBCommand(unittest.TestCase):
@@ -202,6 +203,11 @@ class TestHBNBCommand(unittest.TestCase):
             obj = BaseModel()
             obj.save()
             self.cli.onecmd("BaseModel.all()")
+            self.assertIn(str(obj), output.getvalue())
+
+            obj = Review()
+            obj.save()
+            self.cli.onecmd("Review.all()")
             self.assertIn(str(obj), output.getvalue())
 
 if __name__ == '__main__':
