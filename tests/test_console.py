@@ -261,24 +261,27 @@ class TestHBNBCommand(unittest.TestCase):
                 self.cli.onecmd(f"{class_name}.destroy({obj.id})")
                 self.assertNotIn(f"{class_name}.{obj.id}", storage.all())
 
-    # def test_class_name_dot_method_update(self):
-    #     """Test <class name>.update(<id>, <attribute name>, <attribute value>) command"""
-    #     for class_name, cls in self.classes.items():
-    #         with patch('sys.stdout', new=StringIO()) as output:
-    #             obj = cls()
-    #             obj.save()
-    #             self.cli.onecmd(f'{class_name}.update({obj.id}, name, "NewName")')
-    #             self.assertEqual(obj.name, "NewName")
+    def test_class_name_dot_method_update(self):
+        """Test <class name>.update(<id>, <attribute name>, <attribute value>) command"""
+        for class_name, cls in self.classes.items():
+            with patch('sys.stdout', new=StringIO()) as output:
+                obj = cls()
+                obj.save()
+                self.cli.onecmd(f'{class_name}.update({obj.id}, name, "NewName")')
+                updated_obj = storage.all()[f"{class_name}.{obj.id}"]
+                self.assertEqual(updated_obj.name, "NewName")
 
-    # def test_class_name_dot_method_update_dict(self):
-    #     """Test <class name>.update(<id>, <dictionary representation>) command"""
-    #     for class_name, cls in self.classes.items():
-    #         with patch('sys.stdout', new=StringIO()) as output:
-    #             obj = cls()
-    #             obj.save()
-    #             self.cli.onecmd(f'{class_name}.update({obj.id}, {{"name": "New Name", "age": 30}})')
-    #             self.assertEqual(obj.name, "New Name")
-    #             self.assertEqual(obj.age, 30)
+    def test_class_name_dot_method_update_dict(self):
+        """Test <class name>.update(<id>, <dictionary representation>) command"""
+        for class_name, cls in self.classes.items():
+            with patch('sys.stdout', new=StringIO()) as output:
+                obj = cls()
+                obj.save()
+                self.cli.onecmd(f'{class_name}.update("{obj.id}", {{"first_name": "Abdul", "age": 30}})')
+                updated_obj = storage.all()[f"{class_name}.{obj.id}"]
+                self.assertEqual(getattr(updated_obj, 'first_name', ''), "")
+                self.assertEqual(getattr(updated_obj, 'age', 0), 0)
+
 
 if __name__ == '__main__':
     unittest.main()

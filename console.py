@@ -257,8 +257,7 @@ class HBNBCommand(cmd.Cmd):
                     self.do_update(arg)
             else:
                 args = method_args.split(', ')
-                attr = args[1]
-                value = args[2]
+                id, attr, value = args[0], args[1], args[2]
                 arg = f"{class_name} {id} {attr} {value}"
                 self.do_update(arg)
           
