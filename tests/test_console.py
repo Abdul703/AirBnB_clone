@@ -7,9 +7,15 @@ from unittest.mock import patch
 from io import StringIO
 from console import HBNBCommand
 from models import storage
+from models.amenity import Amenity
 from models.base_model import BaseModel
+from models.city import City
+from models.place import Place
 from models.review import Review
 import os
+
+from models.state import State
+from models.user import User
 
 class TestHBNBCommand(unittest.TestCase):
     """Test cases for the HBNBCommand class"""
@@ -17,6 +23,15 @@ class TestHBNBCommand(unittest.TestCase):
     def setUp(self):
         """Set up for tests"""
         self.cli = HBNBCommand()
+        self.classes = {
+            'BaseModel': BaseModel,
+            'User': User,
+            'State': State,
+            'City': City,
+            'Place': Place,
+            'Amenity': Amenity,
+            'Review': Review
+        }
 
     def tearDown(self):
         """Clean up after tests"""
@@ -43,6 +58,12 @@ class TestHBNBCommand(unittest.TestCase):
         with patch('sys.stdout', new=StringIO()) as output:
             self.cli.onecmd("")
             self.assertEqual(output.getvalue(), "")
+
+    def test_help(self):
+        """Test help command for all commands"""
+        with patch('sys.stdout', new=StringIO()) as f:
+            self.cli.onecmd("help")
+            self.assertIsInstance(f.getvalue(), str)
 
     def test_create_missing_class(self):
         """Test create command with missing class name"""
@@ -197,18 +218,14 @@ class TestHBNBCommand(unittest.TestCase):
             self.cli.onecmd(f'update BaseModel {obj.id} name NewName')
             self.assertEqual(obj.name, "NewName")
 
-    def test_base_model_all(self):
-        """Test BaseModel.all() command"""
-        with patch('sys.stdout', new=StringIO()) as output:
-            obj = BaseModel()
-            obj.save()
-            self.cli.onecmd("BaseModel.all()")
-            self.assertIn(str(obj), output.getvalue())
-
-            obj = Review()
-            obj.save()
-            self.cli.onecmd("Review.all()")
-            self.assertIn(str(obj), output.getvalue())
+    def test_class_name_dot_method_all(self):
+        """Test <class name>.all() command"""
+        for class_name in self.classes:
+            with patch('sys.stdout', new=StringIO()) as output:
+                obj = self.classes[class_name]()
+                obj.save()
+                self.cli.onecmd(f"{class_name}.all()")
+                self.assertIn(str(obj), output.getvalue())
 
 if __name__ == '__main__':
     unittest.main()
