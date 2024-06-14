@@ -62,7 +62,8 @@ class TestHBNBCommand(unittest.TestCase):
     def test_help(self):
         """Test help command for all commands"""
         command_helps = {
-            'help': 'List available commands with "help" or detailed help with "help cmd".'
+            'help': 'List available commands with "help" or detailed help with "help cmd".',
+            'EOF': 'Handle EOF (CTRL+D) to exit the program.',
         }
 
         for cmd, msg in command_helps.items():
@@ -241,6 +242,43 @@ class TestHBNBCommand(unittest.TestCase):
                 count = len([obj for obj in storage.all().values() if obj.__class__.__name__ == class_name])
                 self.cli.onecmd(f"{class_name}.count()")
                 self.assertEqual(output.getvalue().strip(), str(count))
+
+    def test_class_name_dot_method_show(self):
+        """Test <class name>.show(<id>) command"""
+        for class_name, cls in self.classes.items():
+            with patch('sys.stdout', new=StringIO()) as output:
+                obj = cls()
+                obj.save()
+                self.cli.onecmd(f"{class_name}.show({obj.id})")
+                self.assertIn(str(obj), output.getvalue())
+
+    def test_class_name_dot_method_destroy(self):
+        """Test <class name>.destroy(<id>) command"""
+        for class_name, cls in self.classes.items():
+            with patch('sys.stdout', new=StringIO()) as output:
+                obj = cls()
+                obj.save()
+                self.cli.onecmd(f"{class_name}.destroy({obj.id})")
+                self.assertNotIn(f"{class_name}.{obj.id}", storage.all())
+
+    # def test_class_name_dot_method_update(self):
+    #     """Test <class name>.update(<id>, <attribute name>, <attribute value>) command"""
+    #     for class_name, cls in self.classes.items():
+    #         with patch('sys.stdout', new=StringIO()) as output:
+    #             obj = cls()
+    #             obj.save()
+    #             self.cli.onecmd(f'{class_name}.update({obj.id}, name, "NewName")')
+    #             self.assertEqual(obj.name, "NewName")
+
+    # def test_class_name_dot_method_update_dict(self):
+    #     """Test <class name>.update(<id>, <dictionary representation>) command"""
+    #     for class_name, cls in self.classes.items():
+    #         with patch('sys.stdout', new=StringIO()) as output:
+    #             obj = cls()
+    #             obj.save()
+    #             self.cli.onecmd(f'{class_name}.update({obj.id}, {{"name": "New Name", "age": 30}})')
+    #             self.assertEqual(obj.name, "New Name")
+    #             self.assertEqual(obj.age, 30)
 
 if __name__ == '__main__':
     unittest.main()
