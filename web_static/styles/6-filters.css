@@ -61,7 +61,6 @@
     font-size: 16px;
     margin-bottom: 0;
 }
-.filter .popover h4 {
-    margin: 4px;
-    padding-left: 20px;
+.filter .popover li ul {
+    list-style-type: none;
 }
